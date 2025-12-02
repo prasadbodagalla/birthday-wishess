@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!-- canvas-confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@400;700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Satoshi', sans-serif;
+  height: 100%;
+  background: #0c0a09;
+  color: #eee;
+}
+
+h1,h2 {
+  font-family: 'Playfair Display', serif;
+  background: linear-gradient(90deg, #ff8ad2, #ff5a7b);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.glass-card {
+  backdrop-filter: blur(12px);
+  background: rgba(20,20,20,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(50px);
+  position: relative;
+  z-index: 2;
+}
+
+button {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 9999px;
+  background: linear-gradient(90deg,#ff5a7b,#ff1f5b);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255,90,123,0.6);
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+button:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 0 20px rgba(255,90,123,0.9); }
+button:active { transform: scale(0.98) translateY(2px); }
+
+#progress-container {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 50;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg,#ff5a7b,#ff1f5b);
+}
+
+.bento-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+.bento-card { background: rgba(30,30,30,0.6); padding: 1rem; border-radius: 12px; text-align: left; }
+.bento-card.larger { grid-column: span 2; }
+
+.polaroid { width: 300px; margin: 2rem auto; background: #fff; padding: 10px; border-radius: 8px; transform-style: preserve-3d; transition: transform 0.3s; }
+.polaroid img { width: 100%; border-radius: 6px; }
+.caption { text-align:center; margin-top:8px; color:#111; font-weight:bold; }
+
+#aurora { position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; overflow:hidden; }
+#hearts { position: fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+/* Pulse animation */
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
+</style>
+</head>
+<body>
+<div id="aurora"></div>
+<div id="hearts"></div>
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<!-- Steps -->
+<div class="glass-card" id="step1">
+  <div style="font-size:4rem; color:#ff5a7b; animation:pulse 1.5s infinite;">❤</div>
+  <h1>Hey Beautiful,</h1>
+  <p>I built a little world for you, just to bring a smile to your face on your special day.</p>
+  <button onclick="nextStep(2)">Let's Begin</button>
+</div>
+
+<div class="glass-card" id="step2">
+  <div style="font-size:4rem;">🎉</div>
+  <h1>Happy Birthday!</h1>
+  <p>Another year of you making the world brighter. Your existence is a gift, and I'm so lucky to witness it.</p>
+  <button onclick="nextStep(3)">There's more...</button>
+</div>
+
+<div class="glass-card" id="step3">
+  <h1>A Few Things I Adore About You</h1>
+  <div class="bento-grid">
+    <div class="bento-card larger"><strong>Your Unmatched Kindness</strong><p>The genuine warmth you show to everyone is something truly rare and beautiful.</p></div>
+    <div class="bento-card"><strong>That Smile</strong><p>It's a work of art.</p></div>
+    <div class="bento-card larger"><strong>Your Radiant Spirit</strong><p>Your passion for life is infectious. Being around you makes everything feel more exciting and possible.</p></div>
+  </div>
+  <button onclick="nextStep(4)">Remember this?</button>
+</div>
+
+<div class="glass-card" id="step4">
+  <h1>That One Time...</h1>
+  <div class="polaroid" id="polaroid">
+    <img src="./myly.jpg" alt="Your Image Here">
+    <div class="caption">Our favorite memory.</div>
+  </div>
+  <p>Every moment with you feels like a scene from a movie I'd watch on repeat.</p>
+  <button onclick="nextStep(5)">One last thing...</button>
+</div>
+
+<div class="glass-card" id="step5">
+  <div style="font-size:4rem;">🎂</div>
+  <h1>My Wish For You</h1>
+  <p>May the next year bring you all the love, success, and pure happiness you so rightfully deserve. May your dreams soar higher than ever. "I Love u Ammu😘💕"</p>
+  <div id="final-message" style="font-size:1.5rem; margin-top:1rem;"></div>
+  <button onclick="celebrate()">Celebrate!</button>
+</div>
+
+<script>
+// Step Navigation
+let currentStep = 1;
+const totalSteps = 5;
+const steps = [];
+for(let i=1;i<=totalSteps;i++){ steps.push(document.getElementById('step'+i)); }
+steps.forEach(s => s.style.display = 'none');
+steps[0].style.display='block';
+gsap.to(steps[0], {opacity:1, y:0, duration:1});
+
+function nextStep(n){
+  const progress = ((n-1)/totalSteps)*100;
+  gsap.to('#progress-bar',{width:progress+'%',duration:0.5});
+  gsap.to(steps[currentStep-1],{opacity:0,scale:0.8,duration:0.5,onComplete:()=>{
+    steps[currentStep-1].style.display='none';
+    steps[n-1].style.display='block';
+    gsap.fromTo(steps[n-1],{opacity:0,y:50},{opacity:1,y:0,duration:1});
+    currentStep = n;
+  }});
+}
+
+// Celebration
+function celebrate(){
+  const btn = steps[4].querySelector('button');
+  btn.disabled=true;
+  gsap.to(btn,{opacity:0,duration:0.5});
+  const final = document.getElementById('final-message');
+  final.innerText = "You are the best part of my life.";
+  gsap.from(final,{opacity:0,y:50,duration:1});
+  const duration = 5 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex:999 };
+  function randomConfetti(){
+    confetti({...defaults, particleCount: Math.floor(Math.random()*10+10), emojis: ['❤','🎉','✨','🎂']});
+    if(Date.now() < animationEnd) requestAnimationFrame(randomConfetti);
+  }
+  randomConfetti();
+}
+
+// Aurora Background
+const auroraCanvas = document.createElement('canvas');
+auroraCanvas.width = window.innerWidth;
+auroraCanvas.height = window.innerHeight;
+document.getElementById('aurora').appendChild(auroraCanvas);
+const ctx = auroraCanvas.getContext('2d');
+let gradientOffset = 0;
+function drawAurora(){
+  const gradient = ctx.createLinearGradient(0,0,auroraCanvas.width,auroraCanvas.height);
+  gradient.addColorStop(0, `hsla(${333+gradientOffset},70%,55%,0.4)`);
+  gradient.addColorStop(0.3, `hsla(${282+gradientOffset},82%,54%,0.3)`);
+  gradient.addColorStop(0.6, `hsla(${210+gradientOffset},89%,60%,0.3)`);
+  gradient.addColorStop(1, `hsla(${35+gradientOffset},90%,60%,0.3)`);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,auroraCanvas.width,auroraCanvas.height);
+  gradientOffset += 0.2;
+  requestAnimationFrame(drawAurora);
+}
+drawAurora();
+window.addEventListener('resize',()=>{auroraCanvas.width=window.innerWidth; auroraCanvas.height=window.innerHeight;});
+
+// Three.js Hearts
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000);
+camera.position.z = 20;
+let renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+document.getElementById('hearts').appendChild(renderer.domElement);
+let hearts=[];
+let heartGeometry = new THREE.TetrahedronGeometry(0.5,0);
+for(let i=0;i<25;i++){
+  let heartMaterial = new THREE.MeshPhongMaterial({color:0xff5a7b, shininess:100});
+  let mesh = new THREE.Mesh(heartGeometry, heartMaterial);
+  mesh.position.set(Math.random()*40-20,Math.random()*30-15,Math.random()-10);
+  mesh.scale.setScalar(Math.random()*1+0.5);
+  scene.add(mesh);
+  hearts.push(mesh);
+}
+let light = new THREE.DirectionalLight(0xffffff,1);
+light.position.set(0,0,1);
+scene.add(light);
+function animateHearts(){
+  requestAnimationFrame(animateHearts);
+  hearts.forEach((h,i)=>{
+    h.position.y += 0.02*Math.sin(Date.now()*0.001+i);
+    h.rotation.x += 0.01;
+    h.rotation.y += 0.01;
+  });
+  renderer.render(scene,camera);
+}
+animateHearts();
+window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight);});
+
+// Polaroid Parallax
+const polaroid = document.getElementById('polaroid');
+polaroid.addEventListener('mousemove',(e)=>{
+  const rect = polaroid.getBoundingClientRect();
+  const x = (e.clientX - rect.left)/rect.width - 0.5;
+  const y = (e.clientY - rect.top)/rect.height - 0.5;
+  polaroid.style.transform = `rotateY(${x*15}deg) rotateX(${-y*15}deg)`;
+});
+polaroid.addEventListener('mouseleave',()=>{polaroid.style.transform='rotateY(0deg) rotateX(0deg)';});
+</script>
+</body>
+</html>
